@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
-import { SubReddit } from './subReddit.schema';
 import { ObjectId } from 'mongodb';
 
 export type PostDocument = HydratedDocument<Post>;
@@ -8,21 +7,21 @@ export type PostDocument = HydratedDocument<Post>;
 @Schema()
 export class Post {
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId })
-  _id: ObjectId;
+  _id: ObjectId; //Included
   @Prop()
-  title?: string;
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'SubReddit' })
-  subReddit?: SubReddit;
-  @Prop({ required: true })
-  origin: 'Reddit' | 'X (Twitter)';
+  title?: string; // Included
   @Prop()
-  upvotes: string;
+  subReddit?: string; // Included
+  @Prop({ required: true })
+  origin: 'Reddit' | 'X (Twitter)'; // Assume Reddit
   @Prop()
-  description?: string;
+  upvotes: string; // Included
+  @Prop()
+  description?: string; // Not Included
   @Prop({ required: true })
-  url: string;
+  url: string; // Included
   @Prop({ required: true })
-  time: string;
+  time: string; // Not Included could have been
   @Prop(
     raw({
       positive: { type: Number, default: 0 },
@@ -34,7 +33,7 @@ export class Post {
     positive: number;
     negative: number;
     neutral: number;
-  };
+  }; // Not included
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);
