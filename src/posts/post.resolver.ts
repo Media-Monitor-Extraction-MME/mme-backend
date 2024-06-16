@@ -3,25 +3,27 @@ import { UserTaskService } from './../user-task/user-task.service';
 import { Query, Resolver } from '@nestjs/graphql';
 import { Post } from './models/post.model';
 import { PostsService } from './posts.service'; // Import the PostService class
-import { AuthGuard } from '@nestjs/passport';
-import { UseGuards } from '@nestjs/common';
+import { UseGuards, UseInterceptors } from '@nestjs/common';
 import { AuthGuardGQL } from 'src/authz/authguardgql';
 
-import { CurrentUser } from '../user/decorators/user.decorator';
+import { CurrentUser } from '../user/decorator/current-user.decorator';
+import { CurrentUserTask } from 'src/user-task/decorator/current-user-task.decorator';
+import { UserTaskInterceptor } from 'src/user-task/user-task.interceptor';
+import { UserTask } from 'src/schemas/user-task.schema';
 
 // const pubSub = new PubSub();
 
 @Resolver(() => Post)
+@UseGuards(AuthGuardGQL)
+@UseInterceptors(UserTaskInterceptor)
 export class PostResolver {
   constructor(
     private readonly postService: PostsService,
     private readonly userTaskService: UserTaskService,
   ) {} // Make sure PostService is accessible in the constructor
 
-  @UseGuards(AuthGuardGQL)
   @Query(() => [Post])
-  async posts(@CurrentUser() user: any) {
-    const userTask = await this.userTaskService.findUserTask(user['user_id']);
+  async posts(@CurrentUser() user: any, @CurrentUserTask() userTask: UserTask) {
     const posts = await this.postService.findAllQl({
       userTask: userTask,
     });
@@ -31,10 +33,11 @@ export class PostResolver {
     return posts;
   }
 
-  @UseGuards(AuthGuardGQL)
   @Query(() => [Post])
-  async redditPosts(@CurrentUser() user: any) {
-    const userTask = await this.userTaskService.findUserTask(user['user_id']);
+  async redditPosts(
+    @CurrentUser() user: any,
+    @CurrentUserTask() userTask: UserTask,
+  ) {
     const posts = await this.postService.findAllQl({
       origin: 'Reddit',
       userTask: userTask,
@@ -45,11 +48,13 @@ export class PostResolver {
     return posts;
   }
 
-  @UseGuards(AuthGuardGQL)
-  @Query(() => [Post])
-  async twitterPosts(@CurrentUser() user: any) {
-    const userTask = await this.userTaskService.findUserTask(user['user_id']);
+  // , @CurrentUserTask() ut: any
 
+  @Query(() => [Post])
+  async twitterPosts(
+    @CurrentUser() user: any,
+    @CurrentUserTask() userTask: UserTask,
+  ) {
     const posts = await this.postService.findAllQl({
       origin: 'X',
       userTask: userTask,

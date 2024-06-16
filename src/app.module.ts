@@ -24,7 +24,7 @@ import { UserModule } from './user/user.module';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       playground: true,
-      include: [PostsModule, UserModule],
+      include: [PostsModule, UserModule, MentionsModule],
       autoSchemaFile: join(process.cwd(), 'src/schemas/schema.gql'),
       context: ({ req, connection }) => {
         if (connection) {

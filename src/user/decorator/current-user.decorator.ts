@@ -23,6 +23,6 @@ export const CurrentUser = createParamDecorator(
       return null;
     }
 
-    return data ? user[data] : user[0];
+    return data ? user[data] : user;
   },
 );

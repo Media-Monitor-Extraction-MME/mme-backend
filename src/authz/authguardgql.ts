@@ -1,6 +1,7 @@
 import {
   ExecutionContext,
   Injectable,
+  SetMetadata,
   UnauthorizedException,
 } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
@@ -11,7 +12,6 @@ export class AuthGuardGQL extends AuthGuard('jwt') {
   getRequest(context: ExecutionContext) {
     const ctx = GqlExecutionContext.create(context);
     const req = ctx.getContext().req as Request;
-    const headers = req.headers;
     const authorization = req.headers['authorization'];
 
     if (authorization) {
@@ -19,46 +19,68 @@ export class AuthGuardGQL extends AuthGuard('jwt') {
     return req;
   }
 
-  handleRequest(err, user, info, context, status) {
-    if (err || !user) {
-      const managmentToken = process.env['MANAGEMENT_API'];
-      if (!managmentToken) {
+  private async _getAccessToken(): Promise<string> {
+    const clientId = process.env['AUTH0_CLIENT_ID'];
+    const clientSecret = process.env['AUTH0_CLIENT_SECRET'];
+    const issuerUrl = process.env['AUTH0_ISSUER_URL'];
+    const grantType = 'client_credentials';
+    try {
+      const params = new URLSearchParams();
+      params.append('grant_type', grantType);
+      params.append('client_id', clientId);
+      params.append('client_secret', clientSecret);
+      params.append('audience', 'https://citric.eu.auth0.com/api/v2/');
+
+      const token = await fetch(`${issuerUrl}oauth/token`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: params.toString(),
+      })
+        .then(async (response) => {
+          // console.log(await response.text());
+          return response.json();
+        })
+        .then((data) => {
+          return data;
+        });
+
+      if (token.error && token.error_description) {
         throw new UnauthorizedException();
       }
-      const options = {
-        method: 'GET',
-        url: 'https://citric.eu.auth0.com/api/v2/users-by-email',
-        params: { email: 'playgrounduser@test.com' },
-        headers: { authorization: `Bearer ${managmentToken}` },
-      } as {
-        method: string;
-        url: string;
-        params: { email: string };
-        headers: { authorization: string };
-      };
+      if (token && token.statusCode === undefined) {
+        return token.access_token;
+      }
+      throw new UnauthorizedException();
+    } catch (error) {
+      throw error;
+    }
+  }
 
+  handleRequest(err, user) {
+    if (err || !user) {
       try {
         const user = (async () => {
+          const accessToken = await this._getAccessToken();
+
           const user = await fetch(
-            `${options.url}?email=${options.params.email}`,
+            `https://citric.eu.auth0.com/api/v2/users-by-email?email=playgrounduser@test.com`,
             {
-              method: options.method,
+              method: 'GET',
               headers: {
-                Authorization: options.headers.authorization,
+                Authorization: `Bearer ${accessToken}`,
               },
             },
           )
             .then((response) => response.json())
             .then((data) => {
-              console.log(data);
               return data;
             });
-
-          if (user) {
-            return user;
-          }
-          throw err || new UnauthorizedException();
+          return user[0];
         })();
+
+        SetMetadata('user', user);
 
         return user;
       } catch (error) {
