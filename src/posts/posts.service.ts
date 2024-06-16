@@ -4,6 +4,8 @@ import { Connection, Model } from 'mongoose';
 import { Post } from '../schemas/post.schema';
 import { CreateIndexesOptions } from 'mongodb';
 import { SortQuery } from 'src/sort-query/sort-query.interface';
+import { Post as PostQL } from './models/post.model';
+import { UserTask } from 'src/schemas/user-task.schema';
 
 @Injectable()
 export class PostsService {
@@ -71,8 +73,11 @@ export class PostsService {
           break;
 
         default:
+          query.sort = { upvotes: sort.order === 'asc' ? 1 : -1 };
           break;
       }
+    } else {
+      query.sort = { upvotes: -1 };
     }
     if (startTime && endTime) {
       query.time = {
@@ -89,7 +94,7 @@ export class PostsService {
     }
 
     console.log(query);
-    const mongoSort = query.sort;
+    const mongoSort = query.sort ?? {};
     delete query.sort;
     const aggregatedPosts = await this.postModel
       .aggregate([
@@ -99,7 +104,6 @@ export class PostsService {
             upvotes: { $toInt: '$upvotes' },
           },
         },
-
         { $sort: mongoSort },
         { $skip: offset },
         { $limit: limit ? Number(limit) : 10 },
@@ -108,6 +112,41 @@ export class PostsService {
     return aggregatedPosts;
   }
 
+  async findAllQl(props: {
+    origin?: 'Reddit' | 'X';
+    userTask: UserTask;
+  }): Promise<PostQL[]> {
+    const searchQueries = props.userTask.keywords.flatMap((keyword) => {
+      return [
+        { title: { $regex: keyword.keyword, $options: 'i' } },
+        { description: { $regex: keyword.keyword, $options: 'i' } },
+      ];
+    });
+
+    const posts = await this.postModel
+      .find({
+        $or: searchQueries,
+        ...(props.origin ? { origin: props.origin } : {}),
+      })
+      .exec();
+    return posts
+      .sort((a, b) => {
+        return Number(a.upvotes) > Number(b.upvotes) ? -1 : 1;
+      })
+      .map((post: Post) => {
+        return {
+          _id: post._id.toString(),
+          title: post.title,
+          subReddit: post.subReddit,
+          origin: post.origin,
+          upvotes: Number(post.upvotes),
+          description: post.description,
+          url: post.url,
+          time: post.time,
+          collectiveSentiment: post.collectiveSentiment,
+        } as PostQL;
+      });
+  }
   async findAll({ keyword }: { keyword: string }): Promise<Post[]> {
     // console.log(this.connection.collections['posts'].find());
     const posts = await this.postModel

@@ -1,0 +1,65 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""sentiment"""
+type Sentiment {
+  """positive"""
+  positive: Float!
+
+  """negative"""
+  negative: Float!
+
+  """neutral"""
+  neutral: Float!
+}
+
+"""post"""
+type Post {
+  _id: ID!
+
+  """title"""
+  title: String
+
+  """subReddit"""
+  subReddit: String
+
+  """origin"""
+  origin: String!
+
+  """upvotes"""
+  upvotes: Float
+
+  """description"""
+  description: String
+
+  """url"""
+  url: String!
+
+  """time"""
+  time: String!
+
+  """collectiveSentiment"""
+  collectiveSentiment: Sentiment
+}
+
+"""user"""
+type User {
+  user_id: ID!
+
+  """email"""
+  email: String
+
+  """nickname"""
+  nickname: String
+
+  """picture"""
+  picture: String
+}
+
+type Query {
+  user: User!
+  posts: [Post!]!
+  redditPosts: [Post!]!
+  twitterPosts: [Post!]!
+}

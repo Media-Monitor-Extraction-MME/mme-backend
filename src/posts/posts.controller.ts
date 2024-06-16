@@ -1,11 +1,13 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { SortQuery } from 'src/sort-query/sort-query.interface';
 import { Post } from 'src/schemas/post.schema';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('posts')
 export class PostsController {
   constructor(private postsService: PostsService) {}
+  // @UseGuards(AuthGuard('jwt'))
   @Get()
   findAll(
     @Query('keywords') queryKeywords: string,
