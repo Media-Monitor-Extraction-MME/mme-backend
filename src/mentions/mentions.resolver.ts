@@ -6,14 +6,18 @@ import { Mention } from './models/mention.model';
 import { PostsService } from 'src/posts/posts.service';
 import { CurrentUserTask } from 'src/user-task/decorator/current-user-task.decorator';
 import { UserTask } from 'src/schemas/user-task.schema';
+import { GraphQLError } from 'graphql';
 
 @UseGuards(AuthGuardGQL)
 @UseInterceptors(UserTaskInterceptor)
 @Resolver(() => Mention)
 export class MentionsResolver {
   constructor(private readonly postService: PostsService) {}
-  @Query(() => [Mention])
+  @Query(() => [Mention], { nullable: true })
   async mentions(@CurrentUserTask() userTask: UserTask): Promise<Mention[]> {
+    if (!userTask) {
+      throw new GraphQLError('User Task not found please do onboarding');
+    }
     const posts = await this.postService.findAllQl({
       userTask: userTask,
     });
@@ -40,13 +44,15 @@ export class MentionsResolver {
         const index = mentions.findIndex(
           (m) =>
             m.keyword === keyword &&
-            m.date === new Date(post.time).toDateString(),
+            m.date === new Date(post.time).toDateString() &&
+            m.origin === post.origin,
         );
 
         if (index === -1) {
           mentions.push({
             keyword: keyword,
             count: 1,
+            origin: post.origin,
             date: new Date(post.time).toDateString(),
             sentiment: {
               positive: post.collectiveSentiment.positive,

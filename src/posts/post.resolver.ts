@@ -10,6 +10,7 @@ import { CurrentUser } from '../user/decorator/current-user.decorator';
 import { CurrentUserTask } from 'src/user-task/decorator/current-user-task.decorator';
 import { UserTaskInterceptor } from 'src/user-task/user-task.interceptor';
 import { UserTask } from 'src/schemas/user-task.schema';
+import { GraphQLError } from 'graphql';
 
 // const pubSub = new PubSub();
 
@@ -22,8 +23,14 @@ export class PostResolver {
     private readonly userTaskService: UserTaskService,
   ) {} // Make sure PostService is accessible in the constructor
 
-  @Query(() => [Post])
-  async posts(@CurrentUser() user: any, @CurrentUserTask() userTask: UserTask) {
+  @Query(() => [Post], { nullable: true })
+  async posts(
+    @CurrentUser() user: any,
+    @CurrentUserTask() userTask: UserTask,
+  ): Promise<Post[]> {
+    if (!userTask) {
+      throw new GraphQLError('User Task not found please do onboarding');
+    }
     const posts = await this.postService.findAllQl({
       userTask: userTask,
     });
@@ -33,11 +40,16 @@ export class PostResolver {
     return posts;
   }
 
-  @Query(() => [Post])
+  @Query(() => [Post], { nullable: true })
   async redditPosts(
     @CurrentUser() user: any,
     @CurrentUserTask() userTask: UserTask,
-  ) {
+  ): Promise<Post[]> {
+    if (!userTask) {
+      if (!userTask) {
+        throw new GraphQLError('User Task not found please do onboarding');
+      }
+    }
     const posts = await this.postService.findAllQl({
       origin: 'Reddit',
       userTask: userTask,
@@ -50,11 +62,16 @@ export class PostResolver {
 
   // , @CurrentUserTask() ut: any
 
-  @Query(() => [Post])
+  @Query(() => [Post], { nullable: true })
   async twitterPosts(
     @CurrentUser() user: any,
     @CurrentUserTask() userTask: UserTask,
-  ) {
+  ): Promise<Post[]> {
+    if (!userTask) {
+      if (!userTask) {
+        throw new GraphQLError('User Task not found please do onboarding');
+      }
+    }
     const posts = await this.postService.findAllQl({
       origin: 'X',
       userTask: userTask,

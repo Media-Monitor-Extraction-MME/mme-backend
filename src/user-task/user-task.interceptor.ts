@@ -26,7 +26,9 @@ export class UserTaskInterceptor implements NestInterceptor {
     const user = req.user;
     try {
       const userTask = (async () => {
-        return await this.userTaskService.findUserTask(user['user_id']);
+        return await this.userTaskService.findUserTask(
+          user['user_id'] ?? user['sub'],
+        );
       })();
       if (userTask) {
         req.userTask = userTask;

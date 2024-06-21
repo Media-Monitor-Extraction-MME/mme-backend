@@ -39,6 +39,7 @@ export const CurrentUserTask = createParamDecorator(
     // if (!user) {
     //   return null;
     // }
-    return await req.userTask;
+    const userTask = await req.userTask;
+    return userTask ?? null;
   },
 );

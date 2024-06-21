@@ -17,6 +17,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { UserResolver } from './user/user.resolver';
 import { UserModule } from './user/user.module';
+import { platformResolver } from './user-task/enum/platform.enum';
 
 @Module({
   imports: [
@@ -24,7 +25,7 @@ import { UserModule } from './user/user.module';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       playground: true,
-      include: [PostsModule, UserModule, MentionsModule],
+      include: [PostsModule, UserModule, MentionsModule, UserTaskModule],
       autoSchemaFile: join(process.cwd(), 'src/schemas/schema.gql'),
       context: ({ req, connection }) => {
         if (connection) {
@@ -32,6 +33,7 @@ import { UserModule } from './user/user.module';
         }
         return { req };
       },
+      resolvers: { Platform: platformResolver },
     }),
     MongooseModule.forRoot(process.env.MONGODB_URL),
     MentionsModule,

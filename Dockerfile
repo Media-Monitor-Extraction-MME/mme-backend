@@ -13,10 +13,10 @@ RUN npm install
 COPY tsconfig.json ./
 
 # Copy the source code to the working directory
-COPY ./src ./
+COPY ./src ./src
 
 # Expose the port on which the NestJS application will run
-EXPOSE 3000
+EXPOSE 3001
 
 # Start the NestJS application
 CMD ["npm", "run", "start"]

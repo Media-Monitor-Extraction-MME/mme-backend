@@ -11,6 +11,9 @@ export class User {
   @Field({ nullable: true, description: 'nickname' })
   nickname: string;
 
+  @Field({ nullable: true, description: 'name' })
+  name: string;
+
   @Field({ nullable: true, description: 'picture' })
   picture: string;
 }

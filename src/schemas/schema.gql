@@ -22,6 +22,9 @@ type Mention {
   """count"""
   count: Float!
 
+  """origin"""
+  origin: String!
+
   """date"""
   date: String!
 
@@ -58,6 +61,36 @@ type Post {
   collectiveSentiment: Sentiment
 }
 
+"""keyword"""
+type Keyword {
+  """The keyword of the task."""
+  keyword: String
+
+  """The secondary keywords of the task."""
+  secondaryKeywords: [String!]
+
+  """The excluded keywords of the task."""
+  excludedKeywords: [String!]
+}
+
+"""usertask"""
+type UserTask {
+  """keywords"""
+  keywords: [Keyword!]
+
+  """userId"""
+  userId: String
+
+  """platforms"""
+  platforms: [Platform!]
+}
+
+enum Platform {
+  Youtube
+  X
+  Reddit
+}
+
 """user"""
 type User {
   user_id: ID!
@@ -68,14 +101,18 @@ type User {
   """nickname"""
   nickname: String
 
+  """name"""
+  name: String
+
   """picture"""
   picture: String
 }
 
 type Query {
   user: User!
-  posts: [Post!]!
-  redditPosts: [Post!]!
-  twitterPosts: [Post!]!
-  mentions: [Mention!]!
+  userTask: UserTask
+  posts: [Post!]
+  redditPosts: [Post!]
+  twitterPosts: [Post!]
+  mentions: [Mention!]
 }

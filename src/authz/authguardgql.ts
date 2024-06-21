@@ -58,7 +58,7 @@ export class AuthGuardGQL extends AuthGuard('jwt') {
     }
   }
 
-  handleRequest(err, user) {
+  handleRequest(err, user, info, context: ExecutionContext, status) {
     if (err || !user) {
       try {
         const user = (async () => {
@@ -85,6 +85,30 @@ export class AuthGuardGQL extends AuthGuard('jwt') {
         return user;
       } catch (error) {
         throw error;
+      }
+    } else {
+      const args = context.getArgs();
+
+      const req: Request & { user: any } = args[2].req;
+      const authorization = req.headers['authorization'].split(' ')[1];
+
+      try {
+        const loggedInUser = (async () => {
+          const user = await fetch('https://citric.eu.auth0.com/userinfo', {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${authorization}`,
+            },
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              return data;
+            });
+          return user;
+        })();
+        return loggedInUser;
+      } catch (error) {
+        throw new UnauthorizedException();
       }
     }
     return user;

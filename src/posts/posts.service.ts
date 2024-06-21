@@ -114,8 +114,9 @@ export class PostsService {
 
   async findAllQl(props: {
     origin?: 'Reddit' | 'X';
-    userTask: UserTask;
+    userTask?: UserTask;
   }): Promise<PostQL[]> {
+    if (!props.userTask) return [];
     const searchQueries = props.userTask.keywords.flatMap((keyword) => {
       return [
         { title: { $regex: keyword.keyword, $options: 'i' } },

@@ -21,11 +21,16 @@ services:
     networks:
       - dbnet
     ports:
-      - 3000:3000
+      - 3001:3001
     depends_on:
       - mongo
     environment:
       - MONGODB_URL=mongodb://root:example@mongo:27017?directConnection=true&serverSelectionTimeoutMS=2000
+      - AUTH0_ISSUER_URL=https://citric.eu.auth0.com/
+      - AUTH0_AUDIENCE=MME-API
+      - AUTH0_CLIENT_ID=De6XDZ6gGI9qjicX03Ci4wqA3SUQ5btW
+      - AUTH0_CLIENT_SECRET=MMs8XDf6RXFbRhCx1_yiB0xU9arpGm_GBD4ZvSbtNRb35ckMvJHNo_X7ZyE28W88
+      - NODE_ENV=production
 
 networks:
   dbnet:

@@ -9,6 +9,9 @@ export class Mention {
   @Field({ description: 'count' })
   count: number;
 
+  @Field({ description: 'origin' })
+  origin: string;
+
   @Field({ description: 'date' })
   date: string;
 
