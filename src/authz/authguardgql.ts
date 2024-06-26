@@ -58,7 +58,7 @@ export class AuthGuardGQL extends AuthGuard('jwt') {
     }
   }
 
-  handleRequest(err, user, info, context: ExecutionContext, status) {
+  handleRequest(err, user, info, context: ExecutionContext) {
     if (err || !user) {
       try {
         const user = (async () => {

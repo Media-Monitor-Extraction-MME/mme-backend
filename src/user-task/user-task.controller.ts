@@ -4,7 +4,7 @@ import { UserTaskService } from './user-task.service';
 import { UpdateUserTaskDto } from './dto/update-user-task.dto';
 import { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
-import { UserService } from 'src/user/user.service';
+import { UserService } from '../user/user.service';
 
 @Controller('user-task')
 export class UserTaskController {

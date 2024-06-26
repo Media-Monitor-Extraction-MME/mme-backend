@@ -1,11 +1,11 @@
 import { UseGuards, UseInterceptors } from '@nestjs/common';
 import { Resolver, Query } from '@nestjs/graphql';
-import { AuthGuardGQL } from 'src/authz/authguardgql';
-import { UserTaskInterceptor } from 'src/user-task/user-task.interceptor';
+import { AuthGuardGQL } from '../authz/authguardgql';
+import { UserTaskInterceptor } from '../user-task/user-task.interceptor';
 import { Mention } from './models/mention.model';
-import { PostsService } from 'src/posts/posts.service';
-import { CurrentUserTask } from 'src/user-task/decorator/current-user-task.decorator';
-import { UserTask } from 'src/schemas/user-task.schema';
+import { PostsService } from '../posts/posts.service';
+import { CurrentUserTask } from '../user-task/decorator/current-user-task.decorator';
+import { UserTask } from '../schemas/user-task.schema';
 import { GraphQLError } from 'graphql';
 
 @UseGuards(AuthGuardGQL)

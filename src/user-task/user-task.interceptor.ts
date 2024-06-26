@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { UserTaskService } from './user-task.service';
-import { UserTask } from 'src/schemas/user-task.schema';
+import { UserTask } from '../schemas/user-task.schema';
 
 type CurrentUserRequest = Request & {
   user?: any;

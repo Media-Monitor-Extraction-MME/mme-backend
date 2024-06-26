@@ -1,5 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Sentiment } from 'src/posts/models/sentiment.model';
+import { Sentiment } from '../../posts/models/sentiment.model';
+// import { Sentiment } from 'src/posts/models/sentiment.model';
 
 @ObjectType({ description: 'mention' })
 export class Mention {

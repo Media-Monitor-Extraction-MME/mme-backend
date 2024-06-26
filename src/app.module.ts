@@ -18,6 +18,10 @@ import { join } from 'path';
 import { UserResolver } from './user/user.resolver';
 import { UserModule } from './user/user.module';
 import { platformResolver } from './user-task/enum/platform.enum';
+import { ConfigService } from '@nestjs/config';
+
+const configService = new ConfigService();
+const isProduction = configService.get('NODE_ENV') !== 'development';
 
 @Module({
   imports: [
@@ -26,7 +30,9 @@ import { platformResolver } from './user-task/enum/platform.enum';
       driver: ApolloDriver,
       playground: true,
       include: [PostsModule, UserModule, MentionsModule, UserTaskModule],
-      autoSchemaFile: join(process.cwd(), 'src/schemas/schema.gql'),
+      ...(isProduction
+        ? { typePaths: ['src/schemas/schema.gql'], introspection: true }
+        : { autoSchemaFile: join(process.cwd(), 'src/schemas/schema.gql') }),
       context: ({ req, connection }) => {
         if (connection) {
           return { req: connection.context };

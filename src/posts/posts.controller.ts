@@ -1,7 +1,7 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { PostsService } from './posts.service';
-import { SortQuery } from 'src/sort-query/sort-query.interface';
-import { Post } from 'src/schemas/post.schema';
+import { SortQuery } from '../sort-query/sort-query.interface';
+import { Post } from '../schemas/post.schema';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('posts')

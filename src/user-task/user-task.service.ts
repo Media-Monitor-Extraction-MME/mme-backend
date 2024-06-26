@@ -1,4 +1,4 @@
-import { UserTask } from 'src/schemas/user-task.schema';
+import { UserTask } from '../schemas/user-task.schema';
 import { Injectable } from '@nestjs/common';
 import { CreateUserTaskDto } from './dto/create-user-task.dto';
 import { UpdateUserTaskDto } from './dto/update-user-task.dto';

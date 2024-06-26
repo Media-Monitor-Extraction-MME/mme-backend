@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { UserTaskController } from './user-task.controller';
 import { UserTaskService } from './user-task.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserTask, UserTaskSchema } from 'src/schemas/user-task.schema';
-import { TasksModule } from 'src/tasks/tasks.module';
-import { UserService } from 'src/user/user.service';
+import { UserTask, UserTaskSchema } from '../schemas/user-task.schema';
+import { TasksModule } from '../tasks/tasks.module';
+import { UserService } from '../user/user.service';
 import { UserTaskResolver } from './user-task.resolver';
 
 @Module({

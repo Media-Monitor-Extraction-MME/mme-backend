@@ -3,8 +3,8 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { UserTask } from 'src/schemas/user-task.schema';
-import { Task } from 'src/schemas/task.schema';
+import { UserTask } from '../schemas/user-task.schema';
+import { Task } from '../schemas/task.schema';
 
 @Injectable()
 export class TasksService {

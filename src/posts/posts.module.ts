@@ -4,7 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Post, PostSchema } from '../schemas/post.schema';
 import { PostsController } from './posts.controller';
 import { PostResolver } from './post.resolver';
-import { UserTaskModule } from 'src/user-task/user-task.module';
+import { UserTaskModule } from '../user-task/user-task.module';
 
 @Module({
   imports: [

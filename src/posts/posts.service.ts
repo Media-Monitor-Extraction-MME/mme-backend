@@ -3,9 +3,9 @@ import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Connection, Model } from 'mongoose';
 import { Post } from '../schemas/post.schema';
 import { CreateIndexesOptions } from 'mongodb';
-import { SortQuery } from 'src/sort-query/sort-query.interface';
+import { SortQuery } from '../sort-query/sort-query.interface';
 import { Post as PostQL } from './models/post.model';
-import { UserTask } from 'src/schemas/user-task.schema';
+import { UserTask } from '../schemas/user-task.schema';
 
 @Injectable()
 export class PostsService {

@@ -1,4 +1,4 @@
-import { Post } from '../../schemas/post.schema';
+import { Post } from 'src/schemas/post.schema';
 
 export class Sentiment {
   public mentions: number;

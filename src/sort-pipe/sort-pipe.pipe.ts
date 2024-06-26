@@ -1,5 +1,5 @@
 import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
-import { SortQuery } from 'src/sort-query/sort-query.interface';
+import { SortQuery } from '../sort-query/sort-query.interface';
 
 @Injectable()
 export class SortPipePipe implements PipeTransform {

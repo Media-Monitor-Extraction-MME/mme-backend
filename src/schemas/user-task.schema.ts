@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { ObjectId } from 'mongodb';
-import { Platform } from 'src/user-task/dto/create-user-task.dto';
+import { Platform } from '../user-task/dto/create-user-task.dto';
 
 export type UserTaskDocument = HydratedDocument<UserTask>;
 
